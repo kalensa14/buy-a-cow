@@ -1,0 +1,20 @@
+#!/bin/bash
+
+docker info > /dev/null 2>&1
+
+# Ensure that Docker is running...
+if [ $? -ne 0 ]; then
+    echo "Docker is not running."
+
+    exit 1
+fi
+
+APP_NAME="buy-a-cow"
+
+docker run --rm -d \
+    --name buy-a-cow \
+    -v /"$PWD"://opt/"${APP_NAME}" \
+    -w //opt/"${APP_NAME}" \
+    -p 8000:8000 \
+    php:8.1-cli-alpine \
+    php artisan serve --host=0.0.0.0
