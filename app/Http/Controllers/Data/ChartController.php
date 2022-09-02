@@ -19,6 +19,12 @@ class ChartController extends Controller
             ->selectRaw('COUNT(*) AS actions')
             ->where('user_id', Auth::user()->id);
 
-        return response()->json($query->get()->all());
+        return response()->json($query->get()->map(static function ($row) {
+            return [
+                'date' => $row->date,
+                'action' => $row->action->value . ($row->value ? ' '.$row->value : ''),
+                'value' => $row->actions
+            ];
+        })->all());
     }
 }

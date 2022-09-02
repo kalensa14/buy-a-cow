@@ -9,11 +9,38 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# php artisan migrate
-# php artisan db:seed --class=DemoSeeder
+container_name="buy-a-cow"
+composer="docker run --rm -ti -v /${PWD}://app -w //app composer"
+php="docker run --rm -ti -v /${PWD}://app -w //app php:8.1-cli-alpine php"
+
+if docker ps | grep $container_name; then
+    echo "Container $container_name is already running."
+    exit 0
+fi
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+if [ ! -d "$SCRIPT_DIR/vendor" ]; then
+    echo "Installing dependencies..."
+
+    $composer install
+fi
+
+if [ ! -f "$SCRIPT_DIR/database/database.sqlite" ]; then
+    echo "Installing database..."
+    $php artisan migrate --force
+    $php artisan db:seed --class=DemoSeeder
+fi
+
+if [ ! -f "$SCRIPT_DIR/.env" ]; then
+    echo "Installing configuration..."
+    cp "$SCRIPT_DIR/.env_example" "$SCRIPT_DIR/.env"
+fi
+
+echo "Starting application $container_name"
 
 docker run --rm -d \
-    --name buy-a-cow \
+    --name $container_name \
     -v /"$PWD"://opt/project \
     -w //opt/project \
     -p 8000:8000 \

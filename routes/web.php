@@ -44,6 +44,10 @@ Route::middleware(['auth'])->group(static function () {
     Route::get('/reports/chart', [Data\ChartController::class, 'get'])
         ->name('reports-chart.get');
 
+    Route::get('/stats/data', [Data\StatisticController::class, 'get'])
+        ->name('statistic.data')
+        ->middleware(AdminRole::class);
+
     Route::get('/stats', [StatisticController::class, 'show'])
         ->name('statistic.show')
         ->middleware(AdminRole::class);

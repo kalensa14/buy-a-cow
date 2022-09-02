@@ -8,23 +8,22 @@ window.initCharts = function () {
                 const datasets = [], labels = [], dsIndex = []
 
                 data.forEach(row => {
-                    let set = row.action + (row.value ? ' ' + row.value : ''),
-                        i = 0, k = 0;
+                    let i = 0, k = 0;
 
                     if ((i = labels.indexOf(row.date)) === -1) {
                         i = labels.push(row.date) - 1;
                     }
 
-                    if ((k = dsIndex.indexOf(set)) === -1) {
-                        k = dsIndex.push(set) - 1;
+                    if ((k = dsIndex.indexOf(row.action)) === -1) {
+                        k = dsIndex.push(row.action) - 1;
                         datasets.push({
                             type: 'line',
-                            label: set,
+                            label: row.action,
                             data: []
                         });
                     }
 
-                    datasets[k].data[i] = row.actions;
+                    datasets[k].data[i] = row.value;
                 });
 
                 const config = {
