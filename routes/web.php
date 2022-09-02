@@ -7,6 +7,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StatisticController;
 use App\Http\Middleware\AdminRole;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Data;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +40,9 @@ Route::middleware(['auth'])->group(static function () {
 
     Route::get('/reports', [ReportController::class, 'show'])
         ->name('report.show');
+
+    Route::get('/reports/chart', [Data\ChartController::class, 'get'])
+        ->name('reports-chart.get');
 
     Route::get('/stats', [StatisticController::class, 'show'])
         ->name('statistic.show')
