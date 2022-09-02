@@ -9,12 +9,13 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-APP_NAME="buy-a-cow"
+# php artisan migrate
+# php artisan db:seed --class=DemoSeeder
 
 docker run --rm -d \
     --name buy-a-cow \
-    -v /"$PWD"://opt/"${APP_NAME}" \
-    -w //opt/"${APP_NAME}" \
+    -v /"$PWD"://opt/project \
+    -w //opt/project \
     -p 8000:8000 \
     php:8.1-cli-alpine \
     php artisan serve --host=0.0.0.0

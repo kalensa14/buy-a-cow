@@ -1,5 +1,11 @@
 <?php
 
+use App\Http\Controllers\DownloadController;
+use App\Http\Controllers\DownloadFileController;
+use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\StatisticController;
+use App\Http\Middleware\AdminRole;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +20,29 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
+
+Route::middleware(['auth'])->group(static function () {
+    Route::get('/dashboard', static function () {
+        return view('dashboard', ['purchased' => Auth::user()->purchases->isNotEmpty()]);
+    })->name('dashboard');
+
+    Route::post('/purchase', [PurchaseController::class, 'store'])
+        ->name('purchase.store');
+
+    Route::get('/download', [DownloadController::class, 'show'])
+        ->name('download.show');
+
+    Route::get('/download/file', [DownloadFileController::class, 'show'])
+        ->name('download-file.show');
+
+    Route::get('/reports', [ReportController::class, 'show'])
+        ->name('report.show');
+
+    Route::get('/stats', [StatisticController::class, 'show'])
+        ->name('statistic.show')
+        ->middleware(AdminRole::class);
+});
+
+require __DIR__.'/auth.php';
